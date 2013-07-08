@@ -1,0 +1,113 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+
+public class CountInversions {
+	
+	public static void main(String [] args){
+		CountInversions ci = new CountInversions();
+		try{
+			ci.count();
+			ci.performCount();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	double m = 100000;
+	private double[] numbers = new double[100000];
+	
+	public double[] count() throws Exception{
+		File fil = new File("IntegerArray.txt");
+		FileReader inputFil = new FileReader(fil);
+		BufferedReader in = new BufferedReader(inputFil);
+
+		int tall;
+		double i = 0;
+
+		String s =in.readLine();
+
+		while(s!=null)
+		{
+		    
+		    tall = Integer.parseInt(s); //this is line 19
+		    System.out.println(tall);
+		    numbers[(int)i] = tall;
+		    i++;
+		    s = in.readLine();
+		}
+
+		in.close();
+		return numbers;
+	}
+	
+	private InverseHolder performCount(double[] a, int n){
+		
+		if(n <= 1){
+			return a;
+		}
+		
+		List<double[]> l = splitArray(a);
+		double[] firstHalf = l.get(0);
+		double[] secondHalf = l.get(1);
+		double[] b = performCount(firstHalf, n/2);
+		double[] c = performCount(secondHalf, n/2);
+		
+		double[] d = new double[n];
+		int i = 0;
+		int j = 0;
+		int inv = 0;
+		for (int k = 0; k < n; k++){
+			if(b[i] < c[i]){
+				d[k] = b[i];
+				i++;
+			} else if (c[j] < b[i]){
+					d[k] = c[j];
+					j++;
+					inv++;
+			}
+		}
+		InverseHolder ih = new InverseHolder();
+		ih.sorted = d;
+		ih.count = inv;
+		return d;
+				
+	}
+	
+		
+	private List<double[]> splitArray(double a[]){
+		List<double[]> l = new ArrayList<double[]>();
+		
+		double[] ret = new double[(a.length / 2)];
+		int i;
+		for(i = 0; i < (a.length / 2); i++){
+			ret[i] = a[i];
+		}
+		
+		l.add(ret);
+		
+		ret = new double[(a.length / 2)];
+		
+		int k = 0;
+		for(int j = i; j < a.length; j++){
+			ret[k] = a[j];
+			k++;
+		}
+		l.add(ret);
+		return l;
+	}
+	
+	public class InverseHolder{
+		public double[] sorted;
+		public double count;
+	}
+	
+
+}
